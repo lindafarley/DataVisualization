@@ -21,15 +21,29 @@ $searchBtnState.addEventListener("click", handleSearchButton);
 $searchBtnCountry.addEventListener("click", handleSearchButton);
 $searchBtnShape.addEventListener("click", handleSearchButton);
 
-// Set dataSet array from data.js to variable: data 
 var data = dataSet;
+
+//Pagination
+var pageList = [];
+var currentPage = 1;
+var numberPerPage = 25;
+var numberOfPages = 1; 
+
+//Loadlist function
+function loadList() {
+  var begin = ((currentPage - 1) * numberPerPage);
+  var end = begin + numberPerPage;
+  pageList = data.slice(begin, end);
+  renderTable();
+  }
+
 
 // renderTable renders the data as a table to the tbody
 function renderTable() {
   $tbody.innerHTML = "";
-  for (var i = 0; i < data.length; i++) {
+  for (var i = 0; i < pageList.length; i++) {
     // Get get the current address object and its fields
-    var alien = data[i];
+    var alien = pageList[i];
     var fields = Object.keys(alien);
     // Create a new row in the tbody, set the index to be i + startingIndex
     var $row = $tbody.insertRow(i);
@@ -41,6 +55,7 @@ function renderTable() {
     }
   }
 }
+
 
 function handleSearchButton() {
   // Format the user's search by removing leading and trailing whitespace, lowercase the string
@@ -99,10 +114,39 @@ function handleSearchButton() {
 });
 }
 data = filteredData
-renderTable();
+pageNumber = 1
+loadList();
 }
 
-// Render the table for the first time on page load
-renderTable();
 
+//Calculate number of Pages
+function numberOfPages(){
+  numberOfPages = getNumberOfPages();
+  }
+function getNumberOfPages() {
+  //Returns the smallest integer greater than or equal to the given number (use as number of pages)
+  return Math.ceil(data.length / numberPerPage);
+  }
+
+//Page button functions -- functions will get called when buttons are clicked. They each call the loadlist function below.
+function nextPage() {
+  currentPage += 1;
+  loadList();
+  }
+function previousPage() {
+  currentPage -= 1;
+  loadList();
+  }
+  function firstPage() {
+    currentPage = 1;
+    loadList();
+  }
+  function lastPage() {
+    currentPage = numberOfPages;
+    loadList();
+}
+
+
+//Run pagination code
+loadList();
 
